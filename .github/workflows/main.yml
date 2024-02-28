@@ -31,11 +31,11 @@ jobs:
           flutter doctor
           flutter pub get
 
-      - name: Build APK
-        run: flutter build apk
+      - name: Build Release
+        run: flutter build appbundle --release
 
-      - name: Archive APK
+      - name: Archive Release
         uses: actions/upload-artifact@v3
         with:
-          name: apk
-          path: build/app/outputs/flutter-apk/*.apk
+          name: aab
+          path: build/app/outputs/bundle/release/flutter-apk/*.apk
