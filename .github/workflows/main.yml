@@ -40,10 +40,14 @@ jobs:
           name: aab
           path: build/app/outputs/bundle/release/*.aab
 
-      - name: Update APK on VM using sshpass
-        env:
-          VM_PASSWORD: ${{ secrets.VM_PASSWORD }}
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Update APK on VM
         run: |
-          sudo apt-get install -y sshpass
-          sshpass -p $VM_PASSWORD scp -o StrictHostKeyChecking=no ./build/app/outputs/flutter-apk/app-release.aab faizanali@20.10.195.124:/tmp/app-release.aab
-          sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no faizanali@20.10.195.124 "sudo rm -f /var/www/app-release.aab && sudo mv /tmp/app-release.aab /var/www/"
+          # Copy the APK to a temporary location on the VM
+          scp -o StrictHostKeyChecking=no ./build/app/outputs/bundle/release/app-release.aab faizanali@20.10.195.124:/tmp/app-release.aab
+          # SSH into the VM, delete any existing APK in /var/www, and move the new APK to /var/www
+          ssh -o StrictHostKeyChecking=no faizanali@20.10.195.124 "sudo rm -f /var/www/app-release.aab && sudo mv /tmp/app-release.aab /var/www/"
