@@ -39,3 +39,11 @@ jobs:
         with:
           name: aab
           path: build/app/outputs/bundle/release/*.aab
+
+      - name: Update APK on VM using sshpass
+        env:
+          VM_PASSWORD: ${{ secrets.VM_PASSWORD }}
+        run: |
+          sudo apt-get install -y sshpass
+          sshpass -p $VM_PASSWORD scp -o StrictHostKeyChecking=no ./build/app/outputs/flutter-apk/app-release.aab faizanali@20.10.195.124:/tmp/app-release.aab
+          sshpass -p $VM_PASSWORD ssh -o StrictHostKeyChecking=no faizanali@20.10.195.124 "sudo rm -f /var/www/app-release.aab && sudo mv /tmp/app-release.aab /var/www/"
