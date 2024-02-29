@@ -38,4 +38,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: aab
-          path: build/app/outputs/bundle/release/flutter-apk/*.apk
+          path: build/app/outputs/bundle/release/*.aab
